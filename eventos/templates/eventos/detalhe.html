@@ -1,0 +1,72 @@
+
+{% extends "eventos/base.html" %}
+
+{% block title %}{{ evento.titulo }}{% endblock %}
+
+{% block content %}
+    <article class="detalhe-evento">
+        <h2>{{ evento.titulo }}</h2>
+
+        <p>{{ evento.descricao }}</p>
+
+        <p>
+            Início: {{ evento.inicio|date:"d/m/Y H:i" }}
+        </p>
+
+        <p>
+            Fim: {{ evento.fim|date:"d/m/Y H:i" }}
+        </p>
+
+        <p>
+            Local:
+            <a href="{% url 'eventos:local' evento.local.pk %}">
+                {{ evento.local.nome }}
+            </a>
+        </p>
+
+        <p>
+            Vagas restantes: {{ evento.vagas_restantes }}
+        </p>
+
+        <h3>Categorias</h3>
+        {% for categoria in evento.categorias.all %}
+            <a href="{% url 'eventos:index' %}?categoria={{ categoria.id }}">
+                {{ categoria.nome }}
+            </a>
+        {% empty %}
+            <p>Este evento não possui categorias.</p>
+        {% endfor %}
+
+        <h3>Atividades</h3>
+
+        <button type="button" id="botao-atividades">
+            Ocultar atividades
+        </button>
+
+        <ul id="lista-atividades">
+            {% for atividade in evento.atividades.all %}
+                <li>
+                    {{ atividade.horario|time:"H:i" }} —
+                    {{ atividade.titulo }} —
+                    {{ atividade.palestrante }}
+                </li>
+            {% empty %}
+                <li>Nenhuma atividade cadastrada.</li>
+            {% endfor %}
+        </ul>
+
+        {% if relatorio %}
+            <h3>Relatório</h3>
+            <p>Presentes: {{ relatorio.presentes }}</p>
+
+            {% if relatorio.observacoes %}
+                <p>{{ relatorio.observacoes }}</p>
+            {% endif %}
+        {% endif %}
+    </article>
+{% endblock %}
+
+{% block scripts %}
+    {% load static %}
+    <script src="{% static 'js/eventos.js' %}" defer></script>
+{% endblock %}

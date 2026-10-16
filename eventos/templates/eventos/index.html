@@ -1,0 +1,64 @@
+
+{% extends "eventos/base.html" %}
+{% load static %}
+
+{% block title %}Próximos eventos{% endblock %}
+
+{% block content %}
+    <h2>Próximos eventos</h2>
+
+    <section class="categorias">
+        <p>Filtrar por categoria:</p>
+
+        {% for categoria in categorias %}
+            <a href="{% url 'eventos:index' %}?categoria={{ categoria.id }}">
+                {{ categoria.nome }}
+            </a>
+        {% empty %}
+            <p>Nenhuma categoria cadastrada.</p>
+        {% endfor %}
+
+        <a href="{% url 'eventos:index' %}">Todas</a>
+    </section>
+
+    <section class="lista-eventos">
+        {% for evento in eventos %}
+            <article class="card-evento"
+                     data-inicio="{{ evento.inicio.isoformat }}">
+                <h3>{{ evento.titulo }}</h3>
+
+                <p>{{ evento.inicio|date:"d/m/Y H:i" }}</p>
+
+                <p>
+                    Local:
+                    <a href="{% url 'eventos:local' evento.local.pk %}">
+                        {{ evento.local.nome }}
+                    </a>
+                </p>
+
+                <p>
+                    Categorias:
+                    {% for categoria in evento.categorias.all %}
+                        <a href="{% url 'eventos:index' %}?categoria={{ categoria.id }}">
+                            {{ categoria.nome }}
+                        </a>
+                    {% empty %}
+                        Sem categoria
+                    {% endfor %}
+                </p>
+
+                <p class="contagem-regressiva"></p>
+
+                <a href="{% url 'eventos:detalhe' evento.pk %}">
+                    Ver detalhes
+                </a>
+            </article>
+        {% empty %}
+            <p>Nenhum evento futuro encontrado.</p>
+        {% endfor %}
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/eventos.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+
+{% extends "eventos/base.html" %}
+
+{% block title %}{{ local.nome }}{% endblock %}
+
+{% block content %}
+    <h2>{{ local.nome }}</h2>
+
+    <p>Endereço: {{ local.endereco }}</p>
+    <p>Capacidade: {{ local.capacidade }} pessoas</p>
+
+    <h3>Próximos eventos neste local</h3>
+
+    {% for evento in eventos %}
+        <article class="card-evento">
+            <h4>{{ evento.titulo }}</h4>
+            <p>{{ evento.inicio|date:"d/m/Y H:i" }}</p>
+
+            <a href="{% url 'eventos:detalhe' evento.pk %}">
+                Ver detalhes do evento
+            </a>
+        </article>
+    {% empty %}
+        <p>Não há próximos eventos neste local.</p>
+    {% endfor %}
+{% endblock %}
